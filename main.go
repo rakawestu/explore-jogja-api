@@ -16,7 +16,7 @@ const (
 	// MongoDBUrlDefaultValue is Mongo DB default URL
 	MongoDBUrlDefaultValue = "localhost"
 	// MongoDBNameDefaultValue is Mongo DB default name
-	MongoDBNameDefaultValue = "explore-jogja"
+	MongoDBNameDefaultValue = "explore-jogja-api"
 )
 
 var mongoDBUrl, mongoDBName string
@@ -27,11 +27,12 @@ func main() {
 	flag.StringVar(&mongoDBUrl, MongoDBUrlKey, MongoDBUrlDefaultValue, "Mongo DB URL.")
 	flag.StringVar(&mongoDBName, MongoDBNameKey, MongoDBNameDefaultValue, "Mongo DB database name")
 
-	router.GET("/places", func(c *gin.Context) {
+	authorized := router.Group("/api")
+	authorized.GET("/places", func(c *gin.Context) {
 		c.JSON(http.StatusOK, gin.H{"code": http.StatusOK, "data": GetPlaces()})
 	})
 
-	router.GET("/places/:id", func(c *gin.Context) {
+	authorized.GET("/places/:id", func(c *gin.Context) {
 		id := c.Param("id")
 		place, err := GetSinglePlace(id)
 		if err != nil {
@@ -41,7 +42,7 @@ func main() {
 		}
 	})
 
-	router.POST("/places", func(c *gin.Context) {
+	authorized.POST("/places", func(c *gin.Context) {
 		title := c.PostForm("title")
 		description := c.PostForm("description")
 		address := c.PostForm("address")
@@ -58,7 +59,7 @@ func main() {
 		}
 
 		err2 := InsertPlace(Place{
-			Title: title, Latitude: latitude, Longitude: longitude, Description: description, Address: address})
+			Title: title, Description: description, Location: Location{Latitude: latitude, Longitude: longitude, Address: address}})
 		if err != nil {
 			c.JSON(http.StatusBadRequest, gin.H{"code": http.StatusBadRequest, "message": err2.Error()})
 		}
@@ -67,7 +68,7 @@ func main() {
 
 	})
 
-	router.DELETE("/places/:id", func(c *gin.Context) {
+	authorized.DELETE("/places/:id", func(c *gin.Context) {
 		id := c.Param("id")
 		err := DeletePlace(id)
 		if err != nil {
@@ -77,7 +78,7 @@ func main() {
 		}
 	})
 
-	router.PUT("/places/:id", func(c *gin.Context) {
+	authorized.PUT("/places/:id", func(c *gin.Context) {
 		id := c.Param("id")
 		title := c.PostForm("title")
 		address := c.PostForm("address")
@@ -99,7 +100,7 @@ func main() {
 			longitude = 0
 		}
 
-		err2 := UpdatePlace(id, Place{Title: title, Latitude: latitude, Longitude: longitude, Description: description, Address: address})
+		err2 := UpdatePlace(id, Place{Title: title, Description: description, Location: Location{Latitude: latitude, Longitude: longitude, Address: address}})
 		if err2 != nil {
 			c.JSON(http.StatusBadRequest, gin.H{"code": http.StatusBadRequest, "message": err2.Error()})
 		} else {

@@ -13,15 +13,13 @@ const (
 
 // Place object
 type Place struct {
-	Title       string  `form:"title" json:"title" binding:"required"`
-	Latitude    float64 `form:"latitude" json:"latitude" binding:"required"`
-	Longitude   float64 `form:"longitude" json:"longitude" binding:"required"`
-	Description string  `form:"description" json:"description" binding:"required"`
-	Address     string  `form:"address" json:"address" binding:"required"`
-	ID          string  `form:"_id" json:"_id"`
+	Title       string        `form:"title" json:"title" binding:"required"`
+	Location    Location      `form:"location" json:"location" binding:"required"`
+	Description string        `form:"description" json:"description" binding:"required"`
+	ID          bson.ObjectId `json:"id" bson:"_id,omitempty"`
 }
 
-//  GetPlaces is a function to get all place from database
+// GetPlaces is a function to get all place from database
 func GetPlaces() []Place {
 	session, err := mgo.Dial(mongoDBUrl)
 	if err != nil {
@@ -114,20 +112,20 @@ func UpdatePlace(id string, place Place) error {
 		currentPlace.Title = place.Title
 	}
 
-	if place.Address != "" {
-		currentPlace.Address = place.Address
+	if place.Location.Address != "" {
+		currentPlace.Location.Address = place.Location.Address
 	}
 
 	if place.Description != "" {
 		currentPlace.Description = place.Description
 	}
 
-	if place.Latitude != 0 {
-		currentPlace.Latitude = place.Latitude
+	if place.Location.Latitude != 0 {
+		currentPlace.Location.Latitude = place.Location.Latitude
 	}
 
-	if place.Longitude != 0 {
-		currentPlace.Longitude = place.Longitude
+	if place.Location.Longitude != 0 {
+		currentPlace.Location.Longitude = place.Location.Longitude
 	}
 
 	c := session.DB(mongoDBName).C(collectionName)
