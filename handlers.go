@@ -3,6 +3,7 @@ package main
 import (
 	"net/http"
 	"strconv"
+	"strings"
 
 	"github.com/gin-gonic/gin"
 )
@@ -15,7 +16,13 @@ func GetAllPlacesHandler(c *gin.Context) {
 	limit, _ := strconv.ParseInt(limitQuery, 10, 32)
 	offset, _ := strconv.ParseInt(offsetQuery, 0, 32)
 
-	places := GetPlaces(int(limit), int(offset))
+	var places []Place
+	category := c.Query("category")
+	if category != "" {
+		places = GetPlacesBasedOnCategory(strings.ToLower(category), int(limit), int(offset))
+	} else {
+		places = GetPlaces(int(limit), int(offset))
+	}
 	if places != nil {
 		c.JSON(http.StatusOK, gin.H{"code": http.StatusOK, "data": places})
 	} else {

@@ -30,6 +30,25 @@ func GetPlaces(limit int, skip int) []Place {
 	return places
 }
 
+// GetPlacesBasedOnCategory get places data based on category
+func GetPlacesBasedOnCategory(category string, limit int, skip int) []Place {
+	session, err := mgo.Dial(mongoDBUrl)
+	if err != nil {
+		panic(err)
+	}
+	defer session.Close()
+	session.SetMode(mgo.Monotonic, true)
+
+	var places []Place
+	c := session.DB(mongoDBName).C(collectionName)
+
+	err1 := c.Find(bson.M{"category": category}).Limit(limit).Skip(skip).All(&places)
+	if err1 != nil {
+		panic(err1)
+	}
+	return places
+}
+
 // InsertPlace is a function to insert place into database
 func InsertPlace(place Place) error {
 	session, err := mgo.Dial(mongoDBUrl)
