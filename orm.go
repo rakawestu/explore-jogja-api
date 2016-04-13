@@ -12,7 +12,7 @@ const (
 )
 
 // GetPlaces is a function to get all place from database
-func GetPlaces() []Place {
+func GetPlaces(limit int, skip int) []Place {
 	session, err := mgo.Dial(mongoDBUrl)
 	if err != nil {
 		panic(err)
@@ -23,7 +23,7 @@ func GetPlaces() []Place {
 	var places []Place
 	c := session.DB(mongoDBName).C(collectionName)
 
-	err1 := c.Find(bson.M{}).All(&places)
+	err1 := c.Find(bson.M{}).Limit(limit).Skip(skip).All(&places)
 	if err1 != nil {
 		panic(err1)
 	}
@@ -112,12 +112,24 @@ func UpdatePlace(id string, place Place) error {
 		currentPlace.Description = place.Description
 	}
 
+	if place.Category != "" {
+		currentPlace.Category = place.Category
+	}
+
 	if place.Location.Latitude != 0 {
 		currentPlace.Location.Latitude = place.Location.Latitude
 	}
 
 	if place.Location.Longitude != 0 {
 		currentPlace.Location.Longitude = place.Location.Longitude
+	}
+
+	if place.OpeningHours != "" {
+		currentPlace.OpeningHours = place.OpeningHours
+	}
+
+	if place.PriceRange != "" {
+		currentPlace.PriceRange = place.PriceRange
 	}
 
 	c := session.DB(mongoDBName).C(collectionName)

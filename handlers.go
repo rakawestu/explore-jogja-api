@@ -9,9 +9,15 @@ import (
 
 // GetAllPlacesHandler returns all places from database
 func GetAllPlacesHandler(c *gin.Context) {
-	places := GetPlaces()
+	limitQuery := c.Query("limit")
+	offsetQuery := c.Query("offset")
+
+	limit, _ := strconv.ParseInt(limitQuery, 10, 32)
+	offset, _ := strconv.ParseInt(offsetQuery, 0, 32)
+
+	places := GetPlaces(int(limit), int(offset))
 	if places != nil {
-		c.JSON(http.StatusOK, gin.H{"code": http.StatusOK, "data": GetPlaces()})
+		c.JSON(http.StatusOK, gin.H{"code": http.StatusOK, "data": places})
 	} else {
 		c.JSON(http.StatusOK, gin.H{"code": http.StatusOK, "data": []Place{}})
 	}
@@ -35,6 +41,9 @@ func InsertPlaceHandler(c *gin.Context) {
 	address := c.PostForm("address")
 	lat := c.PostForm("latitude")
 	lng := c.PostForm("longitude")
+	category := c.PostForm("category")
+	opHours := c.PostForm("opening_hours")
+	priceRange := c.PostForm("price_range")
 
 	latitude, err := strconv.ParseFloat(lat, 64)
 	if err != nil {
@@ -45,8 +54,7 @@ func InsertPlaceHandler(c *gin.Context) {
 		c.JSON(http.StatusBadRequest, gin.H{"code": http.StatusBadRequest, "message": "Longitude is not a valid number."})
 	}
 
-	err2 := InsertPlace(Place{
-		Title: title, Description: description, Location: Location{Latitude: latitude, Longitude: longitude, Address: address}})
+	err2 := InsertPlace(Place{Title: title, Description: description, Location: Location{Latitude: latitude, Longitude: longitude, Address: address}, Category: category, OpeningHours: opHours, PriceRange: priceRange})
 	if err != nil {
 		c.JSON(http.StatusBadRequest, gin.H{"code": http.StatusBadRequest, "message": err2.Error()})
 	}
@@ -73,6 +81,9 @@ func UpdatePlaceHandler(c *gin.Context) {
 	description := c.PostForm("description")
 	lat := c.PostForm("latitude")
 	lng := c.PostForm("longitude")
+	category := c.PostForm("category")
+	opHours := c.PostForm("opening_hours")
+	priceRange := c.PostForm("price_range")
 
 	var latitude float64
 	var longitude float64
@@ -88,7 +99,7 @@ func UpdatePlaceHandler(c *gin.Context) {
 		longitude = 0
 	}
 
-	err2 := UpdatePlace(id, Place{Title: title, Description: description, Location: Location{Latitude: latitude, Longitude: longitude, Address: address}})
+	err2 := UpdatePlace(id, Place{Title: title, Description: description, Location: Location{Latitude: latitude, Longitude: longitude, Address: address}, Category: category, OpeningHours: opHours, PriceRange: priceRange})
 	if err2 != nil {
 		c.JSON(http.StatusBadRequest, gin.H{"code": http.StatusBadRequest, "message": err2.Error()})
 	} else {
