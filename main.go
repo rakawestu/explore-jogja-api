@@ -34,7 +34,12 @@ func main() {
 	authorized := router.Group("/api")
 	authorized.GET("/places", func(c *gin.Context) {
 		if c.Request.Header.Get(AccessKeyKey) == accessKey {
-			c.JSON(http.StatusOK, gin.H{"code": http.StatusOK, "data": GetPlaces()})
+			places := GetPlaces()
+			if places != nil {
+				c.JSON(http.StatusOK, gin.H{"code": http.StatusOK, "data": GetPlaces()})
+			} else {
+				c.JSON(http.StatusOK, gin.H{"code": http.StatusOK, "data": []Place{}})
+			}
 		} else {
 			c.JSON(http.StatusUnauthorized, gin.H{"code": http.StatusUnauthorized, "message": "Invalid access key or access key not found."})
 		}
