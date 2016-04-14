@@ -12,8 +12,7 @@ func CheckHeaders() gin.HandlerFunc {
 
 		/*
 		   For now we just check if current request has valid
-		   parameter from header.  We're not
-		   check the value, just check if parameter exists or not.
+		   parameter from header.
 		*/
 		headers := c.Request.Header
 		accessKey := headers.Get("Explore-Jogja-Auth")
