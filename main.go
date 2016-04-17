@@ -20,7 +20,7 @@ const (
 	// PortKey is key for port value
 	PortKey = "Port"
 	// DefaultPort is default value for port variable
-	DefaultPort = "8080"
+	DefaultPort = "5000"
 )
 
 // AccessKey access key
