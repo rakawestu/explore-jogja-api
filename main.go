@@ -2,6 +2,7 @@ package main
 
 import (
 	"flag"
+	"os"
 
 	"github.com/gin-gonic/gin"
 )
@@ -28,12 +29,11 @@ var AccessKey string
 var mongoDBUrl, mongoDBName, port string
 
 func main() {
-	router := gin.Default()
-
+	router := gin.New()
+	port := os.Getenv("PORT")
 	flag.StringVar(&mongoDBUrl, MongoDBUrlKey, MongoDBUrlDefaultValue, "Mongo DB URL.")
 	flag.StringVar(&mongoDBName, MongoDBNameKey, MongoDBNameDefaultValue, "Mongo DB database name")
 	flag.StringVar(&AccessKey, AccessKeyKey, "", "Custom authentication token")
-	flag.StringVar(&port, PortKey, DefaultPort, "Port")
 	flag.Parse()
 
 	router.Use(CheckHeaders())
