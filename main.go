@@ -17,11 +17,15 @@ const (
 	MongoDBNameDefaultValue = "explore-jogja-api"
 	// AccessKeyKey is a header key for AccessKey
 	AccessKeyKey = "Explore-Jogja-Auth"
+	// PortKey is key for port value
+	PortKey = "Port"
+	// DefaultPort is default value for port variable
+	DefaultPort = "8080"
 )
 
 // AccessKey access key
 var AccessKey string
-var mongoDBUrl, mongoDBName string
+var mongoDBUrl, mongoDBName, port string
 
 func main() {
 	router := gin.Default()
@@ -29,6 +33,7 @@ func main() {
 	flag.StringVar(&mongoDBUrl, MongoDBUrlKey, MongoDBUrlDefaultValue, "Mongo DB URL.")
 	flag.StringVar(&mongoDBName, MongoDBNameKey, MongoDBNameDefaultValue, "Mongo DB database name")
 	flag.StringVar(&AccessKey, AccessKeyKey, "", "Custom authentication token")
+	flag.StringVar(&port, PortKey, DefaultPort, "Port")
 	flag.Parse()
 
 	router.Use(CheckHeaders())
@@ -37,5 +42,5 @@ func main() {
 		APIRoutes(routes)
 	}
 
-	router.Run(":8080")
+	router.Run(":")
 }
