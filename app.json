@@ -1,0 +1,12 @@
+{
+  "name": "explore-jogja-api",
+  "description": "Explore Jogja API",
+  "keywords": [
+    "go",
+    "jogja",
+  ],
+  "image": "heroku/go:1.6",
+  "mount_dir": "src/github.com/rakawestu/explore-jogja-api",
+  "website": "http://github.com/rakawestu/explore-jogja-api",
+  "repository": "http://github.com/rakawestu/explore-jogja-api"
+}
