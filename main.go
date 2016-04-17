@@ -42,5 +42,5 @@ func main() {
 		APIRoutes(routes)
 	}
 
-	router.Run(":")
+	router.Run(":" + port)
 }
