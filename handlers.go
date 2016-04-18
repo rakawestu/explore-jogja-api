@@ -13,8 +13,17 @@ func GetAllPlacesHandler(c *gin.Context) {
 	limitQuery := c.Query("limit")
 	offsetQuery := c.Query("offset")
 
-	limit, _ := strconv.ParseInt(limitQuery, 10, 32)
-	offset, _ := strconv.ParseInt(offsetQuery, 0, 32)
+	var limit int64 = 10
+	var offset int64
+
+	if limitQuery != "" {
+		limit1, _ := strconv.ParseInt(limitQuery, 10, 32)
+		limit = limit1
+	}
+	if offsetQuery != "" {
+		offset1, _ := strconv.ParseInt(offsetQuery, 0, 32)
+		offset = offset1
+	}
 
 	var places []Place
 	category := c.Query("category")
