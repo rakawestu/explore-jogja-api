@@ -1,7 +1,8 @@
 package orm
 
-// MongoDBUrl url of mongo DB server
-var MongoDBUrl string
+import (
+	"gopkg.in/mgo.v2"
+)
 
-// MongoDBName database name of mongo db server
-var MongoDBName string
+// MongoDB mongo DB instance
+var MongoDB *mgo.Database

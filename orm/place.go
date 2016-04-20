@@ -4,7 +4,6 @@ import (
 	"errors"
 
 	"github.com/rakawestu/explore-jogja-api/models"
-	"gopkg.in/mgo.v2"
 	"gopkg.in/mgo.v2/bson"
 )
 
@@ -14,15 +13,8 @@ const (
 
 // GetPlaces is a function to get all place from database
 func GetPlaces(limit int, skip int) []models.Place {
-	session, err := mgo.Dial(MongoDBUrl)
-	if err != nil {
-		panic(err)
-	}
-	defer session.Close()
-	session.SetMode(mgo.Monotonic, true)
-
 	var places []models.Place
-	c := session.DB(MongoDBName).C(collectionNamePlace)
+	c := MongoDB.C(collectionNamePlace)
 
 	err1 := c.Find(bson.M{}).Limit(limit).Skip(skip).All(&places)
 	if err1 != nil {
@@ -33,15 +25,8 @@ func GetPlaces(limit int, skip int) []models.Place {
 
 // GetPlacesBasedOnCategory get places data based on category
 func GetPlacesBasedOnCategory(category string, limit int, skip int) []models.Place {
-	session, err := mgo.Dial(MongoDBUrl)
-	if err != nil {
-		panic(err)
-	}
-	defer session.Close()
-	session.SetMode(mgo.Monotonic, true)
-
 	var places []models.Place
-	c := session.DB(MongoDBName).C(collectionNamePlace)
+	c := MongoDB.C(collectionNamePlace)
 
 	err1 := c.Find(bson.M{"category": category}).Limit(limit).Skip(skip).All(&places)
 	if err1 != nil {
@@ -52,15 +37,7 @@ func GetPlacesBasedOnCategory(category string, limit int, skip int) []models.Pla
 
 // InsertPlace is a function to insert place into database
 func InsertPlace(place models.Place) error {
-	session, err := mgo.Dial(MongoDBUrl)
-	if err != nil {
-		panic(err)
-	}
-	defer session.Close()
-
-	session.SetMode(mgo.Monotonic, true)
-
-	c := session.DB(MongoDBName).C(collectionNamePlace)
+	c := MongoDB.C(collectionNamePlace)
 
 	err1 := c.Insert(&place)
 	return err1
@@ -68,20 +45,13 @@ func InsertPlace(place models.Place) error {
 
 // GetSinglePlace is a function to get place based on ID
 func GetSinglePlace(id string) (models.Place, error) {
-	session, err := mgo.Dial(MongoDBUrl)
-	if err != nil {
-		panic(err)
-	}
-	defer session.Close()
-	session.SetMode(mgo.Monotonic, true)
-
 	var place models.Place
 
 	if !bson.IsObjectIdHex(id) {
 		return place, errors.New("Place ID is not valid.")
 	}
 
-	c := session.DB(MongoDBName).C(collectionNamePlace)
+	c := MongoDB.C(collectionNamePlace)
 
 	err1 := c.FindId(bson.ObjectIdHex(id)).One(&place)
 	return place, err1
@@ -89,18 +59,12 @@ func GetSinglePlace(id string) (models.Place, error) {
 
 // DeletePlace is a function to delete specific place based on ID
 func DeletePlace(id string) error {
-	session, err := mgo.Dial(MongoDBUrl)
-	if err != nil {
-		panic(err)
-	}
-	defer session.Close()
-	session.SetMode(mgo.Monotonic, true)
 
 	if !bson.IsObjectIdHex(id) {
 		return errors.New("Place ID is not valid.")
 	}
 
-	c := session.DB(MongoDBName).C(collectionNamePlace)
+	c := MongoDB.C(collectionNamePlace)
 
 	err1 := c.Remove(bson.M{"_id": bson.ObjectIdHex(id)})
 	return err1
@@ -108,12 +72,6 @@ func DeletePlace(id string) error {
 
 // UpdatePlace is a function to update place data
 func UpdatePlace(id string, place models.Place) error {
-	session, err := mgo.Dial(MongoDBUrl)
-	if err != nil {
-		panic(err)
-	}
-	defer session.Close()
-	session.SetMode(mgo.Monotonic, true)
 
 	currentPlace, err1 := GetSinglePlace(id)
 	if err1 != nil {
@@ -152,7 +110,7 @@ func UpdatePlace(id string, place models.Place) error {
 		currentPlace.PriceRange = place.PriceRange
 	}
 
-	c := session.DB(MongoDBName).C(collectionNamePlace)
+	c := MongoDB.C(collectionNamePlace)
 
 	_, err2 := c.UpsertId(bson.ObjectIdHex(id), currentPlace)
 

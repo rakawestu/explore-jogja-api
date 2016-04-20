@@ -4,6 +4,8 @@ import (
 	"flag"
 	"os"
 
+	"gopkg.in/mgo.v2"
+
 	"github.com/gin-gonic/gin"
 	"github.com/rakawestu/explore-jogja-api/middlewares"
 	"github.com/rakawestu/explore-jogja-api/orm"
@@ -38,15 +40,20 @@ var MongoDBName string
 var port string
 
 func main() {
-	router := gin.New()
+	router := gin.Default()
 	port := os.Getenv("PORT")
 	flag.StringVar(&MongoDBUrl, MongoDBUrlKey, MongoDBUrlDefaultValue, "Mongo DB URL.")
 	flag.StringVar(&MongoDBName, MongoDBNameKey, MongoDBNameDefaultValue, "Mongo DB database name")
 	flag.StringVar(&AccessKey, AccessKeyKey, "", "Custom authentication token")
 	flag.Parse()
 
-	orm.MongoDBName = MongoDBName
-	orm.MongoDBUrl = MongoDBUrl
+	MongoSession, err := mgo.Dial(MongoDBUrl)
+	if err != nil {
+		panic(err)
+	}
+	defer MongoSession.Close()
+	MongoSession.SetMode(mgo.Monotonic, true)
+	orm.MongoDB = MongoSession.DB(MongoDBName)
 	middlewares.AccessKey = AccessKey
 
 	router.Use(middlewares.CheckHeaders())

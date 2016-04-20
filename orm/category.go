@@ -2,7 +2,6 @@ package orm
 
 import (
 	"github.com/rakawestu/explore-jogja-api/models"
-	"gopkg.in/mgo.v2"
 	"gopkg.in/mgo.v2/bson"
 )
 
@@ -12,15 +11,9 @@ const (
 
 // GetCategories is orm method for get all categories from database
 func GetCategories() []models.Category {
-	session, err := mgo.Dial(MongoDBUrl)
-	if err != nil {
-		panic(err)
-	}
-	defer session.Close()
-	session.SetMode(mgo.Monotonic, true)
 
 	var categories []models.Category
-	c := session.DB(MongoDBName).C(collectionNameCategory)
+	c := MongoDB.C(collectionNameCategory)
 
 	err1 := c.Find(bson.M{}).All(&categories)
 	if err1 != nil {
@@ -31,15 +24,8 @@ func GetCategories() []models.Category {
 
 // InsertCategory is orm method for inserting category into database
 func InsertCategory(category models.Category) error {
-	session, err := mgo.Dial(MongoDBUrl)
-	if err != nil {
-		panic(err)
-	}
-	defer session.Close()
 
-	session.SetMode(mgo.Monotonic, true)
-
-	c := session.DB(MongoDBName).C(collectionNameCategory)
+	c := MongoDB.C(collectionNameCategory)
 
 	err1 := c.Insert(&category)
 	return err1
