@@ -73,7 +73,7 @@ func InsertPlaceHandler(c *gin.Context) {
 	}
 
 	err2 := orm.InsertPlace(models.Place{Title: title, Description: description, Location: models.Location{Latitude: latitude, Longitude: longitude, Address: address}, Category: category, OpeningHours: opHours, PriceRange: priceRange})
-	if err != nil {
+	if err2 != nil {
 		c.JSON(http.StatusBadRequest, gin.H{"code": http.StatusBadRequest, "message": err2.Error()})
 	}
 

@@ -52,7 +52,7 @@ func main() {
 	router.Use(middlewares.CheckHeaders())
 	routes := router.Group("/api")
 	{
-		route.APIRoutes(routes)
+		route.PlaceRoutes(routes)
 	}
 
 	router.Run(":" + port)

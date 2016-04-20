@@ -9,14 +9,8 @@ import (
 )
 
 const (
-	collectionName = "places"
+	collectionNamePlace = "places"
 )
-
-// MongoDBUrl url of mongo DB server
-var MongoDBUrl string
-
-// MongoDBName database name of mongo db server
-var MongoDBName string
 
 // GetPlaces is a function to get all place from database
 func GetPlaces(limit int, skip int) []models.Place {
@@ -28,7 +22,7 @@ func GetPlaces(limit int, skip int) []models.Place {
 	session.SetMode(mgo.Monotonic, true)
 
 	var places []models.Place
-	c := session.DB(MongoDBName).C(collectionName)
+	c := session.DB(MongoDBName).C(collectionNamePlace)
 
 	err1 := c.Find(bson.M{}).Limit(limit).Skip(skip).All(&places)
 	if err1 != nil {
@@ -47,7 +41,7 @@ func GetPlacesBasedOnCategory(category string, limit int, skip int) []models.Pla
 	session.SetMode(mgo.Monotonic, true)
 
 	var places []models.Place
-	c := session.DB(MongoDBName).C(collectionName)
+	c := session.DB(MongoDBName).C(collectionNamePlace)
 
 	err1 := c.Find(bson.M{"category": category}).Limit(limit).Skip(skip).All(&places)
 	if err1 != nil {
@@ -66,7 +60,7 @@ func InsertPlace(place models.Place) error {
 
 	session.SetMode(mgo.Monotonic, true)
 
-	c := session.DB(MongoDBName).C(collectionName)
+	c := session.DB(MongoDBName).C(collectionNamePlace)
 
 	err1 := c.Insert(&place)
 	return err1
@@ -87,7 +81,7 @@ func GetSinglePlace(id string) (models.Place, error) {
 		return place, errors.New("Place ID is not valid.")
 	}
 
-	c := session.DB(MongoDBName).C(collectionName)
+	c := session.DB(MongoDBName).C(collectionNamePlace)
 
 	err1 := c.FindId(bson.ObjectIdHex(id)).One(&place)
 	return place, err1
@@ -106,7 +100,7 @@ func DeletePlace(id string) error {
 		return errors.New("Place ID is not valid.")
 	}
 
-	c := session.DB(MongoDBName).C(collectionName)
+	c := session.DB(MongoDBName).C(collectionNamePlace)
 
 	err1 := c.Remove(bson.M{"_id": bson.ObjectIdHex(id)})
 	return err1
@@ -158,7 +152,7 @@ func UpdatePlace(id string, place models.Place) error {
 		currentPlace.PriceRange = place.PriceRange
 	}
 
-	c := session.DB(MongoDBName).C(collectionName)
+	c := session.DB(MongoDBName).C(collectionNamePlace)
 
 	_, err2 := c.UpsertId(bson.ObjectIdHex(id), currentPlace)
 
