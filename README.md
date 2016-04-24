@@ -2,6 +2,10 @@
 
 This is a repository for golang project to host RESTFUL API about all places in Yogyakarta.
 
+## API Docs
+
+[http://docs.explorejogja.apiary.io/](http://docs.explorejogja.apiary.io/)
+
 ## Third Party Dependencies
 
 - [Gin Gonic](https://gin-gonic.github.io/gin/ "Gin Gonic")
