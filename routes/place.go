@@ -12,6 +12,4 @@ func PlaceRoutes(router *gin.RouterGroup) {
 	router.POST("/places", handlers.InsertPlaceHandler)
 	router.DELETE("/places/:id", handlers.DeletePlaceHandler)
 	router.PUT("/places/:id", handlers.UpdatePlaceHandler)
-	router.GET("/categories", handlers.GetAllCategoriesHandler)
-	router.POST("/categories", handlers.InsertCategoryHandler)
 }

@@ -60,6 +60,8 @@ func main() {
 	routes := router.Group("/api")
 	{
 		route.PlaceRoutes(routes)
+		route.CategoryRoutes(routes)
+		route.ReviewRoutes(routes)
 	}
 
 	router.Run(":" + port)
