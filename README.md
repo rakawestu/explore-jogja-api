@@ -15,11 +15,11 @@ This is a repository for golang project to host RESTFUL API about all places in 
 
 - CRUD (Create, Read, Update, Delete) place.
 - CR (Create, Read) category.
+- CR (Create, Read) review on place.
 - Authentication (Check HTTP header).
 
 ## Future Plans
 
-- CRUD review on place.
 - Add more details of the place.
 
 ## License
